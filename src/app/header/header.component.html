@@ -1,0 +1,28 @@
+<nav class="navbar navbar-expand-lg text-bg-dark nav-pills" *ngIf="loggedInUser!=''">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarToggler">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item mx-3">
+          <a class="nav-link text-light p-2" href="/testing" >Anforderungen</a>
+        </li>
+        <li class="nav-item mx-3">
+          <a class="nav-link text-light p-2" href="/roles" >Rollenübersicht</a>
+        </li>
+        <li class="nav-item mx-3">
+          <a class="nav-link text-light p-2"  href="/info" >Info</a>
+        </li>
+      </ul>
+      <div  class="d-flex align-items-baseline">
+        <p >Willkommen {{firstName}}!</p>
+        <button
+          class="btn btn-primary ms-3"
+          (click)="logout()">
+          Logout
+        </button>
+      </div>
+       </div>
+  </div>
+</nav>

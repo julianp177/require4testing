@@ -1,0 +1,131 @@
+<main>
+  <div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="pb-5 pe-5 ps-5 text-bg-dark">
+      <img src="assets/logo.png" alt="Logo" width="200" height="200">
+      <p>Willkommen bei Require4Testing</p>
+      <br>
+      <div>
+        <input
+          [(ngModel)]="usernameValue"
+          type="text"
+          class="form-control"
+          id="email"
+          placeholder="Username"
+          (keyup.enter)="login()">
+      </div>
+      <br *ngIf="signUpMode">
+      <div *ngIf="signUpMode">
+        <input
+          [(ngModel)]="firstName"
+          type="text"
+          class="form-control"
+          id="firstName"
+          placeholder="Vorname"
+          (keyup.enter)="login()">
+      </div>
+      <br *ngIf="signUpMode">
+      <div *ngIf="signUpMode">
+        <input
+          [(ngModel)]="lastName"
+          type="text"
+          class="form-control"
+          id="lastName"
+          placeholder="Nachname"
+          (keyup.enter)="login()">
+      </div>
+      <br>
+      <div>
+        <input
+          [(ngModel)]="passwordValue"
+          type="password"
+          class="form-control"
+          id="password"
+          placeholder="Passwort"
+          (keyup.enter)="login()">
+      </div>
+      <br *ngIf="signUpMode">
+      <div *ngIf="signUpMode">
+        <input
+          [(ngModel)]="passwordConfirmation"
+          type="password"
+          class="form-control"
+          id="passwordConfirmation"
+          placeholder="Passwort bestätigen"
+          (keyup.enter)="login()">
+      </div>
+      <br *ngIf="changePasswordMode">
+      <div *ngIf="changePasswordMode">
+        <input
+          [(ngModel)]="newPassword"
+          type="password"
+          class="form-control"
+          id="newPassword"
+          placeholder="Neues Passwort"
+          (keyup.enter)="login()">
+      </div>
+      <br *ngIf="changePasswordMode">
+      <div *ngIf="changePasswordMode">
+        <input
+          [(ngModel)]="newPasswordConfirmation"
+          type="password"
+          class="form-control"
+          id="newPasswordConfirmation"
+          placeholder="Neues Passwort bestätigen"
+          (keyup.enter)="login()">
+      </div>
+      <br>
+      <div *ngIf="errorMessage">
+        <p class="row justify-content-center text-danger">{{errorMessage}}</p>
+      </div>
+      <div *ngIf="userSaved">
+        <p class="row justify-content-center text-success werbung">User wurde angelegt</p>
+      </div>
+      <div *ngIf="passwordChanged">
+        <p class="row justify-content-center text-success werbung">Passwort wurde geändert</p>
+      </div>
+      <div class="row justify-content-center p-3">
+        <button
+          *ngIf="loginMode"
+          class="btn btn-outline-light col-auto loginButton"
+          type="button"
+          (click)="login()">
+          Login</button>
+        <button
+          *ngIf="signUpMode || changePasswordMode"
+          class="btn btn-outline-light col-auto loginButton"
+          type="button"
+          (click)="switchMode('login')">
+          Zurück</button>
+        <button
+          *ngIf="loginMode"
+          class="btn btn-outline-light ms-5 col-auto loginButton"
+          type="button"
+          (click)="switchMode('signup')">
+          Sign Up</button>
+        <button
+          *ngIf="signUpMode"
+          class="btn btn-outline-light ms-5 col-auto loginButton"
+          type="button"
+          (click)="login()">
+          Sign Up</button>
+        <button
+          *ngIf="changePasswordMode"
+          class="btn btn-outline-light ms-5 col-auto loginButton"
+          type="button"
+          (click)="changePassword()">
+          Bestätigen</button>
+      </div>
+      <div>
+        <p
+          *ngIf="loginMode"
+          class="row justify-content-center"
+          style="cursor:pointer"
+          (click)="switchMode('changepw')"
+          (mouseenter)="hoverToggler()"
+          (mouseleave)="hoverToggler()"
+          [ngClass]="{'changePw':hovered}"
+        >Passwort ändern?</p>
+      </div>
+    </div>
+  </div>
+</main>

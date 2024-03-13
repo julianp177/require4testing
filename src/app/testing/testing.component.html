@@ -1,0 +1,463 @@
+<main class="p-5">
+  <div class="row">
+    <div class="text-white col">
+      <button class="btn btn-primary me-3" *ngIf="role=='requirements_engineer'" (click)="show(newRequirement)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+          <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+        </svg>
+        Neue Anforderung
+      </button>
+      <button class="btn btn-primary me-3" *ngIf="role=='test_manager'" (click)="show(newTestrun)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+          <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+        </svg>
+        Neuer Testlauf
+      </button>
+      <button class="btn btn-primary" *ngIf="role=='testcase_creator'" (click)="show(newTestcase)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+          <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+        </svg>
+        Neuer Testfall erstellen
+      </button>
+    </div>
+  </div>
+  <br>
+  <div class="accordion" id="accordionPanelsStayOpenExample">
+    <div class="accordion-item" *ngFor="let requirement of requirements; index as i">
+      <h2 class="accordion-header">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          [attr.data-bs-target]="'#panel'+i"
+          aria-expanded="true"
+          [attr.aria-controls]="'panel'+i">
+          {{requirement.bezeichnung}}
+        </button>
+      </h2>
+      <div id="panel{{i}}" class="collapse">
+        <div class="accordion-body">
+          <p>{{requirement.beschreibung}}</p>
+          <div class="accordion-item" *ngFor="let testrun of testruns; index as j">
+            <div *ngIf="testrun.requirement_ID==requirement.requirement_ID">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button collapsed d-flex"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  [attr.data-bs-target]="'#innerpanel'+j"
+                  aria-expanded="true"
+                  [attr.aria-controls]="'innerpanel'+j">
+                  <div class="col-2">
+                    {{testrun.bezeichnung}}
+                  </div>
+                  <div class="col-1">
+                    <div class="text-bg-primary rounded p-1 text-center">
+                      {{userNames[testrun.user_ID-1]}}
+                    </div>
+                  </div>
+                  <div
+                    class="col-8 d-flex justify-content-end align-items-center"
+                    data-bs-toggle="dropdown"
+                    *ngIf="role=='test_manager'"
+                    style="cursor: pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                      <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/>
+                    </svg>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                      <li class="dropdown-item" (click)="show(newTesterAssignment);chosenTestrun=testrun.bezeichnung;chosenTestrunId=testrun.testrun_ID">Tester zuordnen</li>
+                      <li class="dropdown-item" (click)="show(newTestcaseAssignment);chosenTestcase='Testfall auswählen';chosenTestrun=testrun.bezeichnung;chosenTestrunId=testrun.testrun_ID;requirementForAssignment=requirement.requirement_ID">Testfall zuordnen</li>
+                    </ul>
+                  </div>
+                </button>
+              </h2>
+              <div *ngFor="let testcase of testcases">
+                <div
+                  id="innerpanel{{j}}"
+                  class="collapse"
+                  *ngIf="testcase.testrun_ID==testrun.testrun_ID">
+                  <div class="accordion-body">
+                    <div class="row dropdown">
+                      <div class="col-4">
+                        <h6>{{testcase.bezeichnung}}</h6>
+                      </div>
+                      <div class="col-4"*ngIf="testcase.ergebnis">
+                        <div class="rounded p-1 text-center" [ngClass]="{
+                        'text-bg-success':testcase.ergebnis=='Erfolgreich',
+                        'text-bg-danger':testcase.ergebnis=='Fehler',
+                        'text-bg-warning':testcase.ergebnis=='Überprüfen'}">
+                          {{testcase.ergebnis}}
+                        </div>
+                      </div>
+                      <div class="col-4" *ngIf="!testcase.ergebnis"><i>Noch kein Ergebnis eingetragen</i></div>
+                      <div
+                        class="col-4 d-flex justify-content-end align-items-center"
+                        data-bs-toggle="dropdown"
+                        *ngIf="role=='tester'"
+                        style="cursor: pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                          <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/>
+                        </svg>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li class="dropdown-item" (click)="show(newResult);chosenTestcase=testcase.bezeichnung;chosenTestcaseId=testcase.testcase_ID">Ergebnis hinzufügen</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div *ngFor="let testcase of testcases; index as i">
+            <div *ngIf="testcase.requirement_ID==requirement.requirement_ID&&testcase.testrun_ID==null">
+              <div class="row">
+                <div class="col-4">
+                  <h6>{{testcase.bezeichnung}}</h6>
+                </div>
+                <div class="col-4"*ngIf="testcase.ergebnis">
+                  <div class="rounded p-1 text-center" [ngClass]="{
+                        'text-bg-success':testcase.ergebnis=='Erfolgreich',
+                        'text-bg-danger':testcase.ergebnis=='Fehler',
+                        'text-bg-warning':testcase.ergebnis=='Überprüfen'}">
+                    {{testcase.ergebnis}}
+                  </div>
+                </div>
+                <div class="col-4" *ngIf="!testcase.ergebnis"><i>Noch kein Ergebnis eingetragen</i></div>
+                <div
+                  class="col-4"
+                  data-bs-toggle="dropdown"
+                  *ngIf="role=='tester'"
+                  style="cursor: pointer">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                    <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/>
+                  </svg>
+                  <ul class="dropdown-menu dropdown-menu">
+                    <li class="dropdown-item" (click)="show(newResult);chosenTestcase=testcase.bezeichnung;chosenTestcaseId=testcase.testcase_ID">Ergebnis hinzufügen</li>
+                    <!--<li class="dropdown-item" (click)="show(newTestcaseAssignment);chosenTestcase=testcase.bezeichnung;chosenTestrun='Testlauf auswählen';requirementForAssignment=requirement.requirement_ID">Zu Testlauf hinzufügen</li>-->
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<ng-template #newRequirement let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-newRequirement">Neue Anforderung</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    Bitte füllen Sie die Daten für die neue Anforderung aus
+    <div class="container pt-2">
+      <div class="row">
+        <div class="col-12 m-1">
+          <input [(ngModel)]="newReqValue"
+                 (keyup.enter)="addRequirement()"
+                 id="textarea-newreq"
+                 class="form-control"
+                 placeholder="Bezeichnung der Anforderung">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 m-1">
+          <textarea [(ngModel)]="newDescriptionValue"
+                 (keyup.enter)="addRequirement()"
+                 id="textarea-newdesc"
+                 class="form-control"
+                 rows="5"
+                    placeholder="Beschreibung der Anforderung"></textarea>
+        </div>
+      </div>
+      <div class="row" *ngIf="errorMessage">
+        <div class="col-12 m-1 text-danger">
+          {{errorMessage}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-success"
+      (click)="addRequirement()">Bestätigen
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="modal.close('Save click')">Schließen
+    </button>
+  </div>
+</ng-template>
+<ng-template #newTestrun let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-newTestrun">Neuer Testlauf</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    Bitte füllen Sie die Daten für den neuen Testlauf aus
+    <div class="container pt-2">
+      <div class="row">
+        <div class="col-12 m-1">
+          <input [(ngModel)]="newTestrunValue"
+                 (keyup.enter)="addTestrun()"
+                 id="textarea-newtestrun"
+                 class="form-control"
+                 placeholder="Bezeichnung des Testlaufs">
+        </div>
+      </div>
+      <div class="row dropdown">
+        <button
+          class="btn dropdown-toggle"
+          data-bs-toggle="dropdown">
+          {{chosenRequirement}}
+        </button>
+        <ul class="dropdown-menu">
+          <div *ngFor="let requirement of requirements">
+            <li class="dropdown-item"
+                (click)="chosenRequirement=requirement.bezeichnung;chosenRequirementId=requirement.requirement_ID"
+                style="cursor: pointer">
+              {{requirement.bezeichnung}}
+            </li>
+          </div>
+        </ul>
+      </div>
+      <div class="row" *ngIf="errorMessage">
+        <div class="col-12 m-1 text-danger">
+          {{errorMessage}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-success"
+      (click)="addTestrun()">Bestätigen
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="modal.close('Save click')">Schließen
+    </button>
+  </div>
+</ng-template>
+<ng-template #newTestcase let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-newTestcase">Neuer Testfall</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    Bitte füllen Sie die Daten für den neuen Testfall aus
+    <div class="container pt-2">
+      <div class="row">
+        <div class="col-12 m-1">
+          <input [(ngModel)]="newTestcaseValue"
+                 (keyup.enter)="addTestcase()"
+                 id="textarea-newtestcase"
+                 class="form-control"
+                 placeholder="Bezeichnung des Testfalls">
+        </div>
+      </div>
+      <div class="row dropdown">
+        <button
+          class="btn dropdown-toggle"
+          data-bs-toggle="dropdown">
+          {{chosenRequirement}}
+        </button>
+        <ul class="dropdown-menu">
+          <div *ngFor="let requirement of requirements">
+            <li class="dropdown-item"
+                (click)="chosenRequirement=requirement.bezeichnung;chosenRequirementId=requirement.requirement_ID"
+                style="cursor: pointer">
+              {{requirement.bezeichnung}}
+            </li>
+          </div>
+        </ul>
+      </div>
+      <div class="row" *ngIf="errorMessage">
+        <div class="col-12 m-1 text-danger">
+          {{errorMessage}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-success"
+      (click)="addTestcase()">Bestätigen
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="modal.close('Save click')">Schließen
+    </button>
+  </div>
+</ng-template>
+<ng-template #newResult let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title4">Neues Ergebnis</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    Bitte tragen Sie hier das Ergebnis des Testfalls ein
+    <div class="row dropdown">
+      <button
+        class="btn dropdown-toggle"
+        data-bs-toggle="dropdown">
+        {{newResultValue}}
+      </button>
+      <ul class="dropdown-menu">
+        <div>
+          <li class="dropdown-item text-bg-success" (click)="newResultValue='Erfolgreich'">Erfolgreich</li>
+          <li class="dropdown-item text-bg-warning" (click)="newResultValue='Überprüfen'">Überprüfen</li>
+          <li class="dropdown-item text-bg-danger" (click)="newResultValue='Fehler'">Fehler</li>
+        </div>
+      </ul>
+    </div>
+    <!--<div class="container pt-2">
+      <div class="row">
+        <div class="col-12 m-1">
+          <input [(ngModel)]="newResultValue"
+                 (keyup.enter)="addResult()"
+                 id="textarea-newResult"
+                 class="form-control"
+                 placeholder="Ergebnis eintragen">
+        </div>
+      </div>
+      <div class="row" *ngIf="errorMessage">
+        <div class="col-12 m-1 text-danger">
+          {{errorMessage}}
+        </div>
+      </div>
+    </div>
+  </div>-->
+    <div class="row" *ngIf="errorMessage">
+      <div class="col-12 m-1 text-danger">
+        {{errorMessage}}
+      </div>
+    </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-success"
+      (click)="addResult()">Bestätigen
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="modal.close('Save click')">Schließen
+    </button>
+  </div>
+  </div>
+</ng-template>
+<ng-template #newTestcaseAssignment let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-newTestcaseAssignment">Testfall zuordnen</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    Bitte füllen Sie die Zuweisung aus
+    <div class="row dropdown">
+      <button
+        class="btn dropdown-toggle"
+        data-bs-toggle="dropdown">
+        {{chosenTestcase}}
+      </button>
+      <ul class="dropdown-menu">
+        <div *ngFor="let testcase of testcases;index as i">
+          <li class="dropdown-item"
+              *ngIf="testcase.requirement_ID==requirementForAssignment&&testcase.testrun_ID==null"
+              (click)="chosenTestcase=testcase.bezeichnung;chosenTestcaseId=testcase.testcase_ID"
+              style="cursor: pointer">
+            {{testcase.bezeichnung}}
+          </li>
+        </div>
+      </ul>
+    </div>
+    <!--<div class="row dropdown">
+      <button
+        class="btn dropdown-toggle"
+        data-bs-toggle="dropdown">
+        {{chosenTestrun}}
+      </button>
+      <ul class="dropdown-menu">
+        <div *ngFor="let testrun of testruns;index as i">
+          <li class="dropdown-item"
+              *ngIf="testrun.requirement_ID==requirementForAssignment"
+              (click)="chosenTestrun=testrun.bezeichnung"
+              style="cursor: pointer">
+            {{testrun.bezeichnung}}
+          </li>
+        </div>
+      </ul>
+    </div>-->
+    <div class="row" *ngIf="errorMessage">
+      <div class="col-12 m-1 text-danger">
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-success"
+      (click)="assignTestcase()">Bestätigen
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="modal.close('Save click')">Schließen
+    </button>
+  </div>
+</ng-template>
+<ng-template #newTesterAssignment let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-newTesterAssignment">Tester zuordnen</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    Bitte wählen Sie einen Tester aus
+    <div class="row dropdown">
+      <button
+        class="btn dropdown-toggle"
+        data-bs-toggle="dropdown">
+        {{chosenTester}}
+      </button>
+      <ul class="dropdown-menu">
+        <div *ngFor="let user of userNames;index as i">
+          <li class="dropdown-item"
+              (click)="chosenTester=user"
+              style="cursor: pointer">
+            {{user}}
+          </li>
+        </div>
+      </ul>
+      <div class="row" *ngIf="errorMessage">
+        <div class="col-12 m-1 text-danger">
+          {{errorMessage}}
+        </div>
+      </div>
+    </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-success"
+      (click)="assignTester()">Bestätigen
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="modal.close('Save click')">Schließen
+    </button>
+  </div>
+  </div>
+</ng-template>
