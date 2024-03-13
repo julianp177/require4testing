@@ -1,0 +1,32 @@
+{
+  "roles": {
+    "requirements_engineer": {
+      "name": "Requirements Engineer",
+      "description": "Verantwortlich für die Definition und Verwaltung von Anforderungen.",
+      "user":[
+        "ernie.engineer@req4t.com"
+      ]
+    },
+    "test_manager": {
+      "name": "Testmanager",
+      "description": "Verantwortlich für die Planung und Koordination von Testaktivitäten.",
+      "user":[
+        "manni.manage@req4t.com"
+      ]
+    },
+    "test_case_creator": {
+      "name": "Testfallersteller",
+      "description": "Verantwortlich für die Erstellung von Testfällen und Testdaten.",
+      "user":[
+        "fabian.faller@req4t.com"
+      ]
+    },
+    "tester": {
+      "name": "Tester",
+      "description": "Verantwortlich für die Durchführung von Tests und das Melden von Ergebnissen.",
+      "user":[
+        "theodor.tester@req4t.com"
+      ]
+    }
+  }
+}
